@@ -39,35 +39,89 @@ def draw_decision(text):
     else:
         return None
 
-s_deck = setup_deck()  
-players_score = 0
-b_continue = True
+def setup_players(num_players =1):
+    list_of_players = []
+    for i in range(1,num_players+1):
+        player = {'name':f'Player N{i}',
+        'score':0,
+        'is_bot':False,
+        'is winner':False}
+        list_of_players.append(player)
+    print(list_of_players)
+    return(list_of_players)
 
-while b_continue:
-
-    d_card = draw_a_card(s_deck)
-    if d_card != None:
-        print('Вы вытянули: ',d_card)
-        players_score = update_score(players_score,d_card)
-        print(f'У вас {players_score} очков')
-        b_win = count_score(players_score)
-        if b_win == None:
-            pass
-        elif b_win == False:
-            print('Вы проиграли!')
-            break
-        elif b_win == True:
-            print('Вы победили!')
-            break
-        
-
+def choose_winner(players):
+    winners = []
+    win_score = []
+    for player in players:
+        if player['is winner'] == True:
+         return player['name']
+        elif player['score'] <21:
+            win_score.append(player['score'])
+            winners.append(player)
+    print(winners)
+    win_score.sort()
+    if winners:
+        for player in winners:
+            if player['score']== win_score[-1]:
+                return player['name']
     else:
-        print('Колода закончилась')
+        return 'Нет победителя!'
+
+s_deck = setup_deck()
+while True:
+    num_players = input('Vvedite kolichestvo igrokov')
+    try:
+        num_players = int(num_players)
+        answer = 1/num_players
+        print('succes!')
+    except ZeroDivisionError:
+        print('write a new number, cannot divide by zero!')
+    except ValueError:
+        print('enter only numbers!')
+    else:
         break
-    desicion = input('Berem eshe kartu: ')
-    b_continue = draw_decision(desicion)
-    if b_continue == None:
-        print('Неверная команда')
-else:
-    print(f'Вы закончили игру с {players_score} очков')
+
+players = setup_players(num_players)
+
+
+for active_player in players:
+    players_score = active_player['score']
+    b_continue = True
+    while b_continue:
+
+        d_card = draw_a_card(s_deck)
+        if d_card != None:
+            print('Вы вытянули: ',d_card)
+            players_score = update_score(players_score,d_card)
+            print(f'У вас {players_score} очков')
+            b_win = count_score(players_score)
+            if b_win == None:
+                pass
+            elif b_win == False:
+                print('Вы проиграли!')
+                break
+            elif b_win == True:
+                print('Вы победили!')
+                active_player['is winner'] = True
+                break
+            
+
+        else:
+            print('Колода закончилась')
+            break
+        while True:
+            desicion = input('Berem eshe kartu: ')
+            b_continue = draw_decision(desicion)
+            if b_continue == None:
+                print('Неверная команда')
+                continue
+            break
+    else:
+        print(f'Вы закончили игру с {players_score} очков')
+    active_player['score'] = players_score
+print(players)
+print(choose_winner(players))
 print('До новых встреч')
+
+
