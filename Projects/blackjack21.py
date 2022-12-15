@@ -77,7 +77,25 @@ def choose_winner(players):
 
 
 s_deck = setup_deck()
-players = setup_players(int(input('Введите количество игроков: ')))
+
+while True:
+    num_players = input('Введите количество игроков: ')
+    try:
+        num_players = int(num_players)
+    except ValueError:
+        print('Введите число, не содержащее букв и иных символов! ')
+        continue
+    except Exception as e:
+        print(e)
+        continue
+    else:
+        if num_players>0:
+            break
+        else:
+            print('Введите число больше нуля!')
+            continue        
+
+players = setup_players(num_players)
 
 for active_player in players:
 
